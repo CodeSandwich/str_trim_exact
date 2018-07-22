@@ -1,0 +1,10 @@
+Extension trait for controlled trimming of prefixes and suffixes of `&str` and `String`.
+
+Provided methods trim only if the given pattern matches exact number of times, otherwise they return
+the unmodified `&str`. This can be used for primitive parsing and text analysis.
+
+```rust
+assert_eq!(Ok("trimmed"), "not trimmed".trim_left_matches_exactly("not ", 1));
+assert_eq!(Err("not trimmed"), "not trimmed".trim_left_matches_exactly("very ", 1));
+assert_eq!(Ok("trimmed"), "tttrimmed".trim_left_matches_exactly('t', 2));
+```

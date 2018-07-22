@@ -1,11 +1,53 @@
+//! Extension trait for controlled trimming of prefixes and suffixes of `&str` and `String`.
+//!
+//! Provided methods trim only if the given pattern matches exact number of times, otherwise
+//! they return the unmodified `&str`. This can be used for primitive parsing and text analysis.
+
 #![feature(pattern)]
 #![no_std]
 
 use core::str::pattern::{Pattern, ReverseSearcher, Searcher, SearchStep};
 
+/// The extension trait adding methods for controlled trimming
 pub trait TrimMatchesExactlyExt {
+    /// Returns '&str' with pattern matches trimmed from its beginning given number of times.
+    /// If pattern can't be trimmed off that many times, returns `Err` with an untrimmed `&str`.
+    /// This can be used for primitive parsing and text analysis.
+    ///
+    /// # Text directionality
+    ///
+    /// A string is a sequence of bytes. 'Right' in this context means the last
+    /// position of that byte string; for a language like Arabic or Hebrew
+    /// which are 'right to left' rather than 'left to right', this will be
+    /// the _left_ side, not the right.
+    ///
+    /// # Examples
+    /// ```
+    /// # use trim_matches_exactly::TrimMatchesExactlyExt;
+    /// assert_eq!(Ok("trimmed"), "not trimmed".trim_left_matches_exactly("not ", 1));
+    /// assert_eq!(Err("not trimmed"), "not trimmed".trim_left_matches_exactly("very ", 1));
+    /// assert_eq!(Ok("trimmed"), "tttrimmed".trim_left_matches_exactly('t', 2));
+    /// ```
     fn trim_left_matches_exactly<'a, P: Pattern<'a>>(&'a self, pat: P, count: usize)
         -> Result<&'a str, &'a str>;
+    /// Returns '&str' with pattern matches trimmed from its end given number of times.
+    /// If pattern can't be trimmed off that many times, returns `Err` with an untrimmed `&str`.
+    /// This can be used for primitive parsing and text analysis.
+    ///
+    /// # Text directionality
+    ///
+    /// A string is a sequence of bytes. 'Right' in this context means the last
+    /// position of that byte string; for a language like Arabic or Hebrew
+    /// which are 'right to left' rather than 'left to right', this will be
+    /// the _left_ side, not the right.
+    ///
+    /// # Examples
+    /// ```
+    /// # use trim_matches_exactly::TrimMatchesExactlyExt;
+    /// assert_eq!(Ok("trim"), "trim me!".trim_right_matches_exactly(" me!", 1));
+    /// assert_eq!(Err("trim me!"), "trim me!".trim_right_matches_exactly(" you!", 1));
+    /// assert_eq!(Ok("trim"), "trimmm".trim_right_matches_exactly('m', 2));
+    /// ```
     fn trim_right_matches_exactly<'a, P: Pattern<'a>>(&'a self, pat: P, count: usize)
         -> Result<&'a str, &'a str>
         where P::Searcher: ReverseSearcher<'a>;

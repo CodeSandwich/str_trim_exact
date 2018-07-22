@@ -2,5 +2,14 @@
 name = "trim_matches_exactly"
 version = "0.0.0"
 authors = ["CodeSandwich <igor.zuk@protonmail.com>"]
+description = "Extension trait for controlled trimming of prefixes and suffixes of &str and String"
+readme = "crates_io_readme.md"
+keywords = ["match", "str", "string", "text", "trim"]
+categories = ["algorithms", "no-std", "parsing", "rust-patterns", "text-processing"]
+repository = "https://github.com/CodeSandwich/trim_matches_exactly"
+license = "MIT"
+
+[badges]
+travis-ci = { repository = "CodeSandwich/trim_matches_exactly" }
 
 [dependencies]
